@@ -16,6 +16,7 @@ jobs:
       SNOW_QT_ROOT: ${{ github.workspace }}\.tools\qt
       # code.videolan.org drops connections from GitHub runners; x264 is pre-seeded (vcpkg verifies its SHA512).
       VCPKG_DOWNLOADS: ${{ github.workspace }}/vcpkg-downloads
+      X_VCPKG_ASSET_SOURCES: x-azurl,https://raw.githubusercontent.com/blipgr/snow-shot/history-selection-only/ci-assets/vcpkg-assets,,read
     steps:
       - uses: actions/checkout@v5
         with:

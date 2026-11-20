@@ -14,6 +14,8 @@ jobs:
     timeout-minutes: 355
     env:
       SNOW_QT_ROOT: ${{ github.workspace }}\.tools\qt
+      # code.videolan.org drops connections from GitHub runners; x264 is pre-seeded (vcpkg verifies its SHA512).
+      VCPKG_DOWNLOADS: ${{ github.workspace }}cpkg-downloads
     steps:
       - uses: actions/checkout@v5
         with:
@@ -37,6 +39,12 @@ jobs:
             .tools
             ${{ github.workspace }}\..\qt-work
           key: snow-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'scripts/qt-toolchain.json', 'scripts/build-toolchain.json', 'scripts/build-static-qt.ps1') }}
+
+      - name: Seed vcpkg downloads
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force vcpkg-downloads | Out-Null
+          Copy-Item ci-assets/vcpkg-downloads/* vcpkg-downloads/
 
       - name: Bootstrap vcpkg dependencies (no Qt yet)
         shell: pwsh

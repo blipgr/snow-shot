@@ -1,0 +1,75 @@
+name: Build Windows (fork)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [history-selection-only]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 355
+    env:
+      SNOW_QT_ROOT: ${{ github.workspace }}\.tools\qt
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Toolchain versions
+        shell: pwsh
+        run: |
+          rustc --version
+          cargo --version
+          cmake --version
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          Get-ChildItem "$vs\VC\Tools\MSVC" | Select-Object -ExpandProperty Name
+
+      - name: Cache vcpkg and Qt
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .tools
+            ${{ github.workspace }}\..\qt-work
+          key: snow-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'scripts/qt-toolchain.json', 'scripts/build-toolchain.json', 'scripts/build-static-qt.ps1') }}
+
+      - name: Bootstrap vcpkg dependencies (no Qt yet)
+        shell: pwsh
+        run: ./scripts/bootstrap.ps1 -Preset snow-shot-msvc-release -SkipQtValidation -VcpkgVariants Static
+
+      - name: Build static Qt
+        shell: pwsh
+        run: |
+          ./scripts/build-static-qt.ps1 `
+            -InstallPrefix "$env:SNOW_QT_ROOT\6.12.0\msvc-static" `
+            -Configuration Release `
+            -Parallelism 4
+
+      - name: Bootstrap with Qt validation
+        shell: pwsh
+        run: ./scripts/bootstrap.ps1 -Preset snow-shot-msvc-release -VcpkgVariants Static
+
+      - name: Build snow_shot
+        shell: pwsh
+        run: ./scripts/build.ps1 -Preset snow-shot-msvc-release -Target snow_shot
+
+      - name: Collect output
+        if: always()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force out | Out-Null
+          Get-ChildItem build -Recurse -Filter snow_shot.exe -ErrorAction SilentlyContinue |
+            ForEach-Object { $_.FullName; Copy-Item (Split-Path $_.FullName) -Destination out\snow-shot -Recurse -Force; break }
+
+      - name: Upload build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snow-shot-windows-x64
+          path: out
+          if-no-files-found: warn

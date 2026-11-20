@@ -40,7 +40,18 @@ jobs:
 
       - name: Bootstrap vcpkg dependencies (no Qt yet)
         shell: pwsh
-        run: ./scripts/bootstrap.ps1 -Preset snow-shot-msvc-release -SkipQtValidation -VcpkgVariants Static
+        run: |
+          # vcpkg source downloads occasionally drop mid-transfer; retry resumes from built ports.
+          for ($i = 1; $i -le 4; $i++) {
+            try {
+              ./scripts/bootstrap.ps1 -Preset snow-shot-msvc-release -SkipQtValidation -VcpkgVariants Static
+              break
+            } catch {
+              Write-Host "Attempt $i failed: $_"
+              if ($i -eq 4) { throw }
+            }
+            Start-Sleep -Seconds 20
+          }
 
       - name: Build static Qt
         shell: pwsh

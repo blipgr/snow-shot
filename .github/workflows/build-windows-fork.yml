@@ -65,6 +65,8 @@ jobs:
       - name: Build static Qt
         shell: pwsh
         run: |
+          # build-static-qt.ps1 downloads into this folder before creating it.
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\snow-qt-6.12.0-x64" | Out-Null
           ./scripts/build-static-qt.ps1 `
             -InstallPrefix "$env:SNOW_QT_ROOT\6.12.0\msvc-static" `
             -Configuration Release `

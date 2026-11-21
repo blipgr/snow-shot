@@ -505,25 +505,8 @@ bool encodeDraft(const CaptureHistoryDraft& draft, qint64 quota, EncodedDraft* r
             return false;
         record.result = CaptureHistoryResultRecord{size, bytes};
     }
-    // Local patch: persist only the displays the selection touches, so the other
-    // monitors' full-resolution frames are never written to disk. Applies only when a
-    // result image exists and every display carries its canvas rectangle.
-    QVector<const CaptureHistoryDisplayDraft*> keptDisplays;
-    keptDisplays.reserve(draft.displays.size());
-    const bool filterToSelection =
-        record.result.has_value() &&
-        std::all_of(draft.displays.cbegin(), draft.displays.cend(),
-                    [](const auto& d) { return d.sourceCanvasRect.has_value(); });
-    for (const auto& display : draft.displays) {
-        if (!filterToSelection || display.sourceCanvasRect->intersects(draft.selection.rectangle))
-            keptDisplays.append(&display);
-    }
-    if (keptDisplays.isEmpty()) {
-        for (const auto& display : draft.displays)
-            keptDisplays.append(&display);
-    }
-    for (qsizetype i = 0; i < keptDisplays.size(); ++i) {
-        const auto& display = *keptDisplays[i];
+    for (qsizetype i = 0; i < draft.displays.size(); ++i) {
+        const auto& display = draft.displays[i];
         if (display.sourceCanvasOrigin.has_value() &&
             (static_cast<qint64>(display.sourceCanvasOrigin->x()) + display.image.width() - 1 >
                  std::numeric_limits<int>::max() ||

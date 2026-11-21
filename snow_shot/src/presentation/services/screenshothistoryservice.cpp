@@ -494,8 +494,22 @@ ScreenshotHistoryService::snapshotCurrent(bool persistent) const {
     }
     entry.cursorVisible = m_context.displays.cursorVisible;
     entry.cursorAvailable = m_context.displays.cursorAvailable;
-    m_context.displays.forEachImageSource([&entry](qsizetype, const CapturedDisplayModel& display) {
+    // Local patch: keep only displays the selection touches, so other monitors' full frames
+    // are never written to history. Falls back to all displays if none intersect.
+    const QRectF selectionRect = QRectF(entry.selection.selection);
+    bool anyIntersects = false;
+    m_context.displays.forEachImageSource(
+        [&](qsizetype, const CapturedDisplayModel& display) {
+            if (!display.image.isNull() &&
+                ScreenshotGeometryMapper::displayCanvasRect(display).intersects(selectionRect))
+                anyIntersects = true;
+        });
+    m_context.displays.forEachImageSource([&](qsizetype, const CapturedDisplayModel& display) {
         if (display.image.isNull()) {
+            return;
+        }
+        if (anyIntersects &&
+            !ScreenshotGeometryMapper::displayCanvasRect(display).intersects(selectionRect)) {
             return;
         }
         const QPoint origin =

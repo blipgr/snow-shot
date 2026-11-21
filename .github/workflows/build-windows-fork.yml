@@ -32,14 +32,19 @@ jobs:
           $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
           Get-ChildItem "$vs\VC\Tools\MSVC" | Select-Object -ExpandProperty Name
 
-      - name: Cache vcpkg and Qt
+      - name: Restore vcpkg and Qt cache
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
-          path: |
-            .tools
-            ${{ github.workspace }}\..\qt-work
+          path: .tools
           key: snow-deps-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'scripts/qt-toolchain.json', 'scripts/build-toolchain.json', 'scripts/build-static-qt.ps1') }}
+
+      - name: Pin Rust 1.97.1 (newer Rust deprecates APIs the project denies)
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal
+          rustup default 1.97.1
+          rustc --version
 
       - name: Seed vcpkg downloads
         shell: pwsh
@@ -79,6 +84,13 @@ jobs:
       - name: Build snow_shot
         shell: pwsh
         run: ./scripts/build.ps1 -Preset snow-shot-msvc-release -Target snow_shot
+
+      - name: Save vcpkg and Qt cache
+        if: always() && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .tools
+          key: ${{ steps.cache.outputs.cache-primary-key }}
 
       - name: Collect output
         if: always()

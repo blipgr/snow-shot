@@ -3232,6 +3232,8 @@ SettingsItemDefinition ocrModelTypeItem() {
          settingsText(QT_TRANSLATE_NOOP("SettingsCatalog", "Ultra small V6"))},
         {QStringLiteral("small"), settingsText(QT_TRANSLATE_NOOP("SettingsCatalog", "Small V6"))},
         {QStringLiteral("medium"), settingsText(QT_TRANSLATE_NOOP("SettingsCatalog", "Medium V6"))},
+        {QStringLiteral("cyrillic"),
+         settingsText(QT_TRANSLATE_NOOP("SettingsCatalog", "Russian / Cyrillic V5"))},
     };
     payload.binding = SettingsSelectBinding::OcrModelType;
     return {

@@ -495,7 +495,7 @@ constexpr SchemaString kSchemaStrings11[] = {u"manual", u"check", u"download", u
                                                                   std::size(kSchemaStrings11)};
 constexpr SchemaString kSchemaStrings12[] = {u"none", u"system", u"manual"};
 constexpr SchemaAllowedValues kSchemaAllowed10 = {kSchemaStrings12, std::size(kSchemaStrings12)};
-constexpr SchemaString kSchemaStrings13[] = {u"extra_small", u"small", u"medium"};
+constexpr SchemaString kSchemaStrings13[] = {u"extra_small", u"small", u"medium", u"cyrillic"};
 constexpr SchemaAllowedValues kSchemaAllowed11 = {kSchemaStrings13, std::size(kSchemaStrings13)};
 constexpr SchemaString kSchemaStrings14[] = {u"max", u"min"};
 constexpr SchemaAllowedValues kSchemaAllowed12 = {kSchemaStrings14, std::size(kSchemaStrings14)};

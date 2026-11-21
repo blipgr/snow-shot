@@ -4210,6 +4210,10 @@
             <translation>在 AirDrop 確認分享成功後執行</translation>
         </message>
         <message>
+            <source>Russian / Cyrillic V5</source>
+            <translation>俄語／西里爾文 V5</translation>
+        </message>
+        <message>
             <source>Save as file</source>
             <translation>儲存為檔案</translation>
         </message>

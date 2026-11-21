@@ -104,6 +104,33 @@
           "url": "https://www.modelscope.cn/models/mgchao/SnowShotOCR/resolve/master/PP-OCRv6/medium/ppocrv6_dict.txt"
         }
       ]
+    },
+    {
+      "type": "cyrillic",
+      "id": "ppocrv5-eslav-98afcfe",
+      "detector": "PP-OCRv6_det_small.onnx",
+      "recognizer": "PP-OCRv5_eslav_rec.onnx",
+      "dictionary": "ppocrv5_eslav_dict.txt",
+      "files": [
+        {
+          "name": "PP-OCRv6_det_small.onnx",
+          "size": 9929594,
+          "sha256": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f",
+          "url": "https://www.modelscope.cn/models/mgchao/SnowShotOCR/resolve/master/PP-OCRv6/small/PP-OCRv6_det_small.onnx"
+        },
+        {
+          "name": "PP-OCRv5_eslav_rec.onnx",
+          "size": 7857161,
+          "sha256": "98afcfe74d48381dbfe8b64ad9fe4545061d0a2c6c36be1a35e7ac438f4dd6c7",
+          "url": "https://raw.githubusercontent.com/blipgr/snow-shot/history-selection-only/ci-assets/ocr-cyrillic/PP-OCRv5_eslav_rec.onnx"
+        },
+        {
+          "name": "ppocrv5_eslav_dict.txt",
+          "size": 1663,
+          "sha256": "3e95f1581557162870cacdba5af91a4c6be2890710d395b0c3c7578e7ee5e6eb",
+          "url": "https://raw.githubusercontent.com/blipgr/snow-shot/history-selection-only/ci-assets/ocr-cyrillic/ppocrv5_eslav_dict.txt"
+        }
+      ]
     }
   ],
   "paragraph_model": {

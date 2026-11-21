@@ -4210,6 +4210,10 @@
             <translation>在隔空投送确认分享成功后执行</translation>
         </message>
         <message>
+            <source>Russian / Cyrillic V5</source>
+            <translation>俄语/西里尔文 V5</translation>
+        </message>
+        <message>
             <source>Save as file</source>
             <translation>保存为文件</translation>
         </message>

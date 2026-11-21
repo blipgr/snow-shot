@@ -1649,10 +1649,11 @@ void builtInCatalogIsCompleteAndValid() {
                 modelType->configurationKey == QStringLiteral("text_recognition/model_type") &&
                 modelTypeSelect != nullptr &&
                 modelTypeSelect->binding == settings::SettingsSelectBinding::OcrModelType &&
-                modelTypeSelect->options.size() == 3 &&
+                modelTypeSelect->options.size() == 4 &&
                 modelTypeSelect->options.at(0).value == QStringLiteral("extra_small") &&
                 modelTypeSelect->options.at(1).value == QStringLiteral("small") &&
-                modelTypeSelect->options.at(2).value == QStringLiteral("medium"),
+                modelTypeSelect->options.at(2).value == QStringLiteral("medium") &&
+                modelTypeSelect->options.at(3).value == QStringLiteral("cyrillic"),
             "System settings must expose the ordered OCR model and processing controls");
     require(
         textDetectionProcessing != nullptr &&

@@ -4210,6 +4210,10 @@
             <translation>Runs when AirDrop confirms sharing</translation>
         </message>
         <message>
+            <source>Russian / Cyrillic V5</source>
+            <translation>Russian / Cyrillic V5</translation>
+        </message>
+        <message>
             <source>Save as file</source>
             <translation>Save as file</translation>
         </message>

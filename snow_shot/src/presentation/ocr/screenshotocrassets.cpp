@@ -111,6 +111,9 @@ ModelContract modelContract(ScreenshotOcrModelType type) {
     case ScreenshotOcrModelType::Medium:
         return {"ppocrv6-medium-f5063c6", "PP-OCRv6_det_medium.onnx", "PP-OCRv6_rec_medium.onnx",
                 "ppocrv6_dict.txt"};
+    case ScreenshotOcrModelType::Cyrillic:
+        return {"ppocrv5-eslav-98afcfe", "PP-OCRv6_det_small.onnx", "PP-OCRv5_eslav_rec.onnx",
+                "ppocrv5_eslav_dict.txt"};
     }
     return {};
 }
@@ -122,6 +125,8 @@ std::optional<ScreenshotOcrModelType> parseModelType(const QString& value) {
         return ScreenshotOcrModelType::Small;
     if (value == QStringLiteral("medium"))
         return ScreenshotOcrModelType::Medium;
+    if (value == QStringLiteral("cyrillic"))
+        return ScreenshotOcrModelType::Cyrillic;
     return std::nullopt;
 }
 
@@ -319,7 +324,7 @@ std::optional<Descriptor> loadDescriptor(const QString& root, QString* error) {
         return std::nullopt;
     }
     const QJsonArray models = rootObject.value(QStringLiteral("models")).toArray();
-    if (models.size() != 3) {
+    if (models.size() != 4) {
         if (error != nullptr)
             *error = QStringLiteral("incomplete OCR asset manifest");
         return std::nullopt;
@@ -362,7 +367,7 @@ std::optional<Descriptor> loadDescriptor(const QString& root, QString* error) {
         modelIds.insert(model.id);
         result.models.push_back(std::move(model));
     }
-    if (modelTypes.size() != 3) {
+    if (modelTypes.size() != 4) {
         if (error != nullptr)
             *error = QStringLiteral("incomplete OCR asset manifest");
         return std::nullopt;
@@ -795,6 +800,8 @@ QString screenshotOcrModelTypeValue(ScreenshotOcrModelType type) {
         return QStringLiteral("small");
     case ScreenshotOcrModelType::Medium:
         return QStringLiteral("medium");
+    case ScreenshotOcrModelType::Cyrillic:
+        return QStringLiteral("cyrillic");
     }
     return QStringLiteral("small");
 }

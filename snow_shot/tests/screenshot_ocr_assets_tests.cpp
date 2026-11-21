@@ -193,6 +193,10 @@ void writeAssetManifest(const QString& root, bool completePayload) {
                    QStringLiteral("PP-OCRv6_det_medium.onnx"), QByteArray("medium-detector"),
                    QStringLiteral("PP-OCRv6_rec_medium.onnx"), QByteArray("medium-recognizer"),
                    QStringLiteral("ppocrv6_dict.txt"), dictionary),
+             model(QStringLiteral("cyrillic"), QStringLiteral("ppocrv5-eslav-98afcfe"),
+                   QStringLiteral("PP-OCRv6_det_small.onnx"), QByteArray("cyrillic-detector"),
+                   QStringLiteral("PP-OCRv5_eslav_rec.onnx"), QByteArray("cyrillic-recognizer"),
+                   QStringLiteral("ppocrv5_eslav_dict.txt"), QByteArray("cyrillic-dictionary")),
          }}};
 #ifdef Q_OS_MACOS
     const QByteArray macProcess = kMacHeader + process;
@@ -714,7 +718,8 @@ void everyModelMapsToItsOwnFilesAndCachesAreRetained() {
                 downloads.isEmpty(),
             "Small must continue to resolve entirely offline without downloading");
     for (const auto type : {ScreenshotOcrModelType::ExtraSmall, ScreenshotOcrModelType::Small,
-                            ScreenshotOcrModelType::Medium}) {
+                            ScreenshotOcrModelType::Medium,
+                            ScreenshotOcrModelType::Cyrillic}) {
         require(screenshotOcrModelTypeFromValue(screenshotOcrModelTypeValue(type)) == type,
                 "V6 identifiers round trip");
     }

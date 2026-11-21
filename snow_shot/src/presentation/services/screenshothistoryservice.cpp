@@ -516,6 +516,25 @@ ScreenshotHistoryService::snapshotCurrent(bool persistent) const {
             ScreenshotGeometryMapper::displayImageSourceCanvasRect(display).topLeft().toPoint();
         const QPoint displayOrigin =
             ScreenshotGeometryMapper::displayCanvasRect(display).topLeft().toPoint();
+        // Local patch: on pixel-canvas platforms store only the selected part of the frame.
+        // Restore already places an image of any size at its source origin.
+        if (!display.canvasUsesPoints) {
+            const QRect sourceRect =
+                ScreenshotGeometryMapper::displayImageSourceCanvasRect(display).toAlignedRect();
+            const QRect crop = sourceRect.intersected(selectionRect.toAlignedRect());
+            if (!crop.isEmpty() && sourceRect.size() == display.image.size()) {
+                ScreenshotHistoryDisplay cropped;
+                cropped.stableId = display.stableId;
+                cropped.name = display.name;
+                cropped.image = display.image.copy(crop.translated(-sourceRect.topLeft()));
+                cropped.sourceCanvasOrigin = crop.topLeft();
+                cropped.canvasUsesPoints = false;
+                cropped.backingScale = display.backingScale;
+                cropped.nativeDisplayId = display.nativeDisplayId;
+                entry.displays.push_back(std::move(cropped));
+                return;
+            }
+        }
         entry.displays.push_back(ScreenshotHistoryDisplay{
             display.stableId, display.name, display.image,
             origin != displayOrigin ? std::optional<QPoint>(origin) : std::nullopt,
